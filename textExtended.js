@@ -89,9 +89,13 @@ if (event.srcElement)  myField = event.srcElement;
  var keyCodes = {
 
  66 : this.createKeySnippet("''","''"), //b -- bold
- 73 : this.createKeySnippet("//","//"),
- 79 : this.createKeySnippet("\n#"," ") //o -- Ordered list
- //i --italics
+ 73 : this.createKeySnippet("//","//"), //i --italics
+ 79 : this.createKeySnippet("\n#"," "), //o -- Ordered list
+ 85 : this.createKeySnippet("__","__"), //u -- understrike list
+ 75 : this.createKeySnippet("\n```\n","```"), //k -- code
+ 83 : this.createKeySnippet(",,",",,"), //s -- subscript
+ 76 : this.createKeySnippet("\n*"," "), //l -- list
+
 };
 
 //keyCodes=JSON.parse(this.wiki.getTiddlerAsJson("$:/keyboard/snippets")).text || keyCodes;
