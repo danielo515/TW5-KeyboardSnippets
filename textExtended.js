@@ -76,9 +76,11 @@ EditTextWidget.prototype.render = function(parent,nextSibling) {
 
 //DANIELO EDIT
 
+EditTextWidget.prototype.createKeySnippet = function(preTag,postTag){
+ return {pre:preTag, post:postTag, length:preTag.length+postTag.length };
+};
+
 EditTextWidget.prototype.insertAtCursor = function (event) {
-    //IE support
-    console.log(myField);
     var myValue="";
     var myField;
 if (event.srcElement)  myField = event.srcElement;
@@ -86,30 +88,45 @@ if (event.srcElement)  myField = event.srcElement;
 
  var keyCodes = {
 
- 66 : "''''", //b -- bold
- 73 : "////" //i --italics
+ 66 : this.createKeySnippet("''","''"), //b -- bold
+ 73 : this.createKeySnippet("//","//"),
+ 79 : this.createKeySnippet("\n#"," ") //o -- Ordered list
+ //i --italics
 };
 
- if(event.ctrlKey){
-    keyCodes[event.keyCode] ? myValue=keyCodes[event.keyCode] : "";
- }
+//keyCodes=JSON.parse(this.wiki.getTiddlerAsJson("$:/keyboard/snippets")).text || keyCodes;
 
-    if (document.selection) {
-        myField.focus();
-        sel = document.selection.createRange();
-        sel.text = myValue;
-    }
-    //MOZILLA and others
-    else if (myField.selectionStart || myField.selectionStart == '0') {
-        var startPos = myField.selectionStart;
-        var endPos = myField.selectionEnd;
-        myField.value = myField.value.substring(0, startPos)
-            + myValue
-            + myField.value.substring(endPos, myField.value.length);
-        myField.selectionStart = startPos + myValue.length/2;
-        myField.selectionEnd = startPos + myValue.length/2;
-    } else {
-        myField.value += myValue;
+ if(event.ctrlKey && keyCodes[event.keyCode] )
+  //para evitar sobreescribir otros eventos solo reaccionamos ante combinaciones que
+  //estén en nuestro map de keycodes
+ {
+            event.preventDefault();
+			event.stopPropagation();
+             myValue=keyCodes[event.keyCode];
+
+        //Internet explorer
+            if (document.selection) {
+                myField.focus();
+                sel = document.selection.createRange();
+                sel.text = myValue;
+            }
+            //MOZILLA and others
+            else if (myField.selectionStart || myField.selectionStart == '0') {
+                var startPos = myField.selectionStart;
+                var endPos = myField.selectionEnd;
+                var selected=myField.value.substring(startPos,endPos);
+                console.log("Sel Start: "+startPos+" Ends at "+ endPos);
+                myField.value = myField.value.substring(0, startPos)
+                    + myValue.pre + selected + myValue.post
+                    + myField.value.substring(endPos, myField.value.length);
+
+                var middle=Math.round((myValue.length/2));
+                console.log(middle);
+                myField.selectionStart = startPos + middle;
+                myField.selectionEnd = startPos + middle;
+            } else {
+                myField.value += myValue;
+            }
     }
 };
 
