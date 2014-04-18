@@ -61,7 +61,6 @@ EditTextWidget.prototype.render = function(parent,nextSibling) {
 		{name: "input", handlerObject: this, handlerMethod: "handleInputEvent"}
 	]);
 
-	//domNode.addEventListener("click",this.insertAtCursor(domNode,"[INSERTED]"));
 	// Insert the element into the DOM
 	parent.insertBefore(domNode,nextSibling);
 	this.domNodes.push(domNode);

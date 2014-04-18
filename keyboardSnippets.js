@@ -20,6 +20,7 @@ The edit-text widget calls this method just after inserting its dom nodes
 EditTextWidget.prototype.postRender = function() {
 	var self = this;
 	var domNode = self.domNodes[0];
+	this.KEYMAP = this.wiki.getTiddlerData("$:/plugins/danielo/keyboardSnippets/KEYMAP");
 	$tw.utils.addEventListeners(domNode,[
 		{name: "keydown", handlerObject: this, handlerMethod: "insertAtCursor"}
 	]);
@@ -28,11 +29,42 @@ EditTextWidget.prototype.postRender = function() {
 };
 
 
-	//DANIELO EDIT
-
 EditTextWidget.prototype.createKeySnippet = function(preTag,postTag){
  return {pre:preTag, post:postTag, length:preTag.length+postTag.length };
 };
+
+
+EditTextWidget.prototype.getKeyName = function (keyCode){
+  return this.KEYMAP[keyCode];
+};
+
+
+
+//EDIT OR DELETE THIS FUNCTION!!!!
+EditTextWidget.prototype.parseKeyBindings = function (keyCombinations){
+for(comb in keyCombinations){
+
+
+}
+
+};
+
+
+
+
+EditTextWidget.prototype.composeKeyCombo = function (event){
+var keyCombo="";
+
+            if(event.ctrlKey)keyCombo+="ctrl+";
+            if(event.shiftKey)keyCombo+="shift+";
+			if(event.altKey)keyCombo+="alt+";
+			keyCombo+=this.getKeyName(event.keyCode);
+
+return keyCombo;
+
+};
+
+
 
 EditTextWidget.prototype.insertAtCursor = function (event) {
     var myValue="";
@@ -40,27 +72,27 @@ EditTextWidget.prototype.insertAtCursor = function (event) {
 if (event.srcElement)  myField = event.srcElement;
  else if (event.target) myField = event.target;
 
- var keyCodes = {
+ var keySnippets = {
 
- 66 : this.createKeySnippet("''","''"), //b -- bold
- 73 : this.createKeySnippet("//","//"), //i --italics
- 79 : this.createKeySnippet("\n#"," "), //o -- Ordered list
- 85 : this.createKeySnippet("__","__"), //u -- understrike list
- 75 : this.createKeySnippet("\n```\n","```"), //k -- code
- 83 : this.createKeySnippet(",,",",,"), //s -- subscript
- 76 : this.createKeySnippet("\n*"," "), //l -- list
+ "ctrl+b" : this.createKeySnippet("''","''"), //b -- bold
+ "ctrl+i" : this.createKeySnippet("//","//"), //i --italics
+ "ctrl+o" : this.createKeySnippet("\n#"," "), //o -- Ordered list
+ "ctrl+u" : this.createKeySnippet("__","__"), //u -- understrike list
+ "ctrl+k" : this.createKeySnippet("\n```\n","```"), //k -- code
+ "ctrl+s" : this.createKeySnippet(",,",",,"), //s -- subscript
+ "ctrl+l" : this.createKeySnippet("\n*"," "), //l -- list
 
 };
 
-//keyCodes=JSON.parse(this.wiki.getTiddlerAsJson("$:/keyboard/snippets")).text || keyCodes;
+//keySnippets=JSON.parse(this.wiki.getTiddlerAsJson("$:/keyboard/snippets")).text || keySnippets;
 
- if(event.ctrlKey && keyCodes[event.keyCode] )
+ if(myValue=keySnippets[this.composeKeyCombo(event)] )
   //para evitar sobreescribir otros eventos solo reaccionamos ante combinaciones que
-  //estén en nuestro map de keycodes
+  //estén en nuestro map de keySnippets
  {
             event.preventDefault();
 			event.stopPropagation();
-            myValue=keyCodes[event.keyCode];
+            //myValue=keySnippets[this.getKeyName(event.keyCode)];
 
         //Internet explorer
             if (document.selection) {

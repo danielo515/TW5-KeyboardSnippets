@@ -127,6 +127,10 @@ Error message and password prompt
 
 <li>$:/isEncrypted</li>
 
+<li>$:/plugins/danielo/keyboardSnippets/KEYCODES</li>
+
+<li>$:/plugins/danielo/keyboardSnippets/KEYMAP</li>
+
 <li>$:/plugins/tiddlywiki/fullscreen</li>
 
 <li>$:/ShowEditPreview</li>
@@ -135,11 +139,17 @@ Error message and password prompt
 
 <li>$:/state/tab-{1649180219}</li>
 
+<li>$:/state/tab-{260706635}</li>
+
+<li>$:/state/tab/sidebar-{1743827719}</li>
+
 <li>$:/StoryList</li>
 
 <li>$:/temp/advancedsearch</li>
 
 <li>$:/temp/NewFieldName</li>
+
+<li>$:/temp/NewTagName</li>
 
 <li>$:/themes/tiddlywiki/snowwhite</li>
 
@@ -2615,7 +2625,7 @@ Error message and password prompt
     }
 }</pre>
 </div>
-<div created="20140418153435777" modified="20140418155523885" module-type="widget" title="$:/core/modules/widgets/keyboard-snippets.js" type="application/javascript">
+<div created="20140418153435777" modified="20140418201556093" module-type="widget" title="$:/core/modules/widgets/keyboard-snippets.js" type="application/javascript">
 <pre>/*\
 title: $:/core/modules/widgets/keyboard-snippets.js
 type: application/javascript
@@ -2638,6 +2648,7 @@ The edit-text widget calls this method just after inserting its dom nodes
 EditTextWidget.prototype.postRender = function() {
 	var self = this;
 	var domNode = self.domNodes[0];
+	this.KEYMAP = this.wiki.getTiddlerData(&quot;$:/plugins/danielo/keyboardSnippets/KEYMAP&quot;);
 	$tw.utils.addEventListeners(domNode,[
 		{name: &quot;keydown&quot;, handlerObject: this, handlerMethod: &quot;insertAtCursor&quot;}
 	]);
@@ -2646,11 +2657,53 @@ EditTextWidget.prototype.postRender = function() {
 };
 
 
-	//DANIELO EDIT
-
 EditTextWidget.prototype.createKeySnippet = function(preTag,postTag){
  return {pre:preTag, post:postTag, length:preTag.length+postTag.length };
 };
+
+
+EditTextWidget.prototype.getKeyName = function (keyCode){
+  return this.KEYMAP[keyCode];
+};
+
+
+EditTextWidget.prototype.parseKeyBindings = function (keyCombinations){
+for(comb in keyCombinations){
+    var components = comb.split(&quot;+&quot;);
+
+    for(var t=0; t&lt;components.length; t++) {
+		var s = components[t].toLowerCase();
+		// Look for modifier keys
+		if(s === &quot;ctrl&quot;) {
+			info.ctrlKey = true;
+		} else if(s === &quot;shift&quot;) {
+			info.shiftKey = true;
+		} else if(s === &quot;alt&quot;) {
+			info.altKey = true;
+		}
+		// Replace named keys with their code
+		if(namedKeys[s]) {
+			info.keyCode = namedKeys[s];
+		}
+	}
+
+}
+
+};
+
+EditTextWidget.prototype.composeKeyCombo = function (event){
+var keyCombo=&quot;&quot;;
+
+            if(event.ctrlKey)keyCombo+=&quot;ctrl+&quot;;
+            if(event.shiftKey)keyCombo+=&quot;shift+&quot;;
+			if(event.altKey)keyCombo+=&quot;alt+&quot;;
+			keyCombo+=this.getKeyName(event.keyCode);
+
+return keyCombo;
+
+};
+
+
 
 EditTextWidget.prototype.insertAtCursor = function (event) {
     var myValue=&quot;&quot;;
@@ -2658,27 +2711,27 @@ EditTextWidget.prototype.insertAtCursor = function (event) {
 if (event.srcElement)  myField = event.srcElement;
  else if (event.target) myField = event.target;
 
- var keyCodes = {
+ var keySnippets = {
 
- 66 : this.createKeySnippet(&quot;''&quot;,&quot;''&quot;), //b -- bold
- 73 : this.createKeySnippet(&quot;//&quot;,&quot;//&quot;), //i --italics
- 79 : this.createKeySnippet(&quot;\n#&quot;,&quot; &quot;), //o -- Ordered list
- 85 : this.createKeySnippet(&quot;__&quot;,&quot;__&quot;), //u -- understrike list
- 75 : this.createKeySnippet(&quot;\n```\n&quot;,&quot;```&quot;), //k -- code
- 83 : this.createKeySnippet(&quot;,,&quot;,&quot;,,&quot;), //s -- subscript
- 76 : this.createKeySnippet(&quot;\n*&quot;,&quot; &quot;), //l -- list
+ &quot;ctrl+b&quot; : this.createKeySnippet(&quot;''&quot;,&quot;''&quot;), //b -- bold
+ &quot;ctrl+i&quot; : this.createKeySnippet(&quot;//&quot;,&quot;//&quot;), //i --italics
+ &quot;ctrl+o&quot; : this.createKeySnippet(&quot;\n#&quot;,&quot; &quot;), //o -- Ordered list
+ &quot;ctrl+u&quot; : this.createKeySnippet(&quot;__&quot;,&quot;__&quot;), //u -- understrike list
+ &quot;ctrl+k&quot; : this.createKeySnippet(&quot;\n```\n&quot;,&quot;```&quot;), //k -- code
+ &quot;ctrl+s&quot; : this.createKeySnippet(&quot;,,&quot;,&quot;,,&quot;), //s -- subscript
+ &quot;ctrl+l&quot; : this.createKeySnippet(&quot;\n*&quot;,&quot; &quot;), //l -- list
 
 };
 
-//keyCodes=JSON.parse(this.wiki.getTiddlerAsJson(&quot;$:/keyboard/snippets&quot;)).text || keyCodes;
+//keySnippets=JSON.parse(this.wiki.getTiddlerAsJson(&quot;$:/keyboard/snippets&quot;)).text || keySnippets;
 
- if(event.ctrlKey &amp;&amp; keyCodes[event.keyCode] )
+ if(myValue=keySnippets[this.composeKeyCombo(event)] )
   //para evitar sobreescribir otros eventos solo reaccionamos ante combinaciones que
-  //estén en nuestro map de keycodes
+  //estén en nuestro map de keySnippets
  {
             event.preventDefault();
 			event.stopPropagation();
-            myValue=keyCodes[event.keyCode];
+            //myValue=keySnippets[this.getKeyName(event.keyCode)];
 
         //Internet explorer
             if (document.selection) {
@@ -2710,7 +2763,7 @@ if (event.srcElement)  myField = event.srcElement;
 
 })();</pre>
 </div>
-<div current-tiddler="$:/core/modules/widgets/keyboard-snippets.js" modified="20140418155523885" title="$:/HistoryList" type="application/json">
+<div current-tiddler="$:/core/modules/widgets/keyboard-snippets.js" modified="20140418201556094" title="$:/HistoryList" type="application/json">
 <pre>[
     {
         &quot;title&quot;: &quot;Draft of 'GettingStarted'&quot;
@@ -2822,11 +2875,240 @@ if (event.srcElement)  myField = event.srcElement;
     },
     {
         &quot;title&quot;: &quot;$:/core/modules/widgets/keyboard-snippets.js&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'New Tiddler'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/ControlPanel&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/plugins/danielo/keyboardSnippets/KEYCODES&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of '$:/plugins/danielo/keyboardSnippets/KEYCODES'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/plugins/danielo/keyboardSnippets/KEYCODES&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/AdvancedSearch&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 298.890625,
+            &quot;left&quot;: 782,
+            &quot;width&quot;: 130,
+            &quot;right&quot;: 912,
+            &quot;bottom&quot;: 315.890625,
+            &quot;height&quot;: 17
+        }
+    },
+    {
+        &quot;title&quot;: &quot;$:/themes/tiddlywiki/vanilla&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 289.890625,
+            &quot;left&quot;: 85,
+            &quot;width&quot;: 171,
+            &quot;right&quot;: 256,
+            &quot;bottom&quot;: 305.890625,
+            &quot;height&quot;: 16
+        }
+    },
+    {
+        &quot;title&quot;: &quot;Draft of '$:/plugins/danielo/keyboardSnippets/KEYCODES'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/plugins/danielo/keyboardSnippets/KEYCODES&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/plugins/danielo/keyboardSnippets/KEYCODES&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 329.890625,
+            &quot;left&quot;: 841,
+            &quot;width&quot;: 341,
+            &quot;right&quot;: 1182,
+            &quot;bottom&quot;: 349.890625,
+            &quot;height&quot;: 20
+        }
+    },
+    {
+        &quot;title&quot;: &quot;Draft of '$:/plugins/danielo/keyboardSnippets/KEYCODES'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/plugins/danielo/keyboardSnippets/KEYCODES&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'New Tiddler'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/plugins/danielo/keyboardSnippets/KEYMAP&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of '$:/plugins/danielo/keyboardSnippets/KEYMAP'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/plugins/danielo/keyboardSnippets/KEYMAP&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of '$:/plugins/danielo/keyboardSnippets/KEYMAP'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/plugins/danielo/keyboardSnippets/KEYMAP&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/AdvancedSearch&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 162,
+            &quot;left&quot;: 932,
+            &quot;width&quot;: 14,
+            &quot;right&quot;: 946,
+            &quot;bottom&quot;: 179,
+            &quot;height&quot;: 17
+        }
+    },
+    {
+        &quot;title&quot;: &quot;$:/core/modules/widgets/keyboard-snippets.js&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 297.890625,
+            &quot;left&quot;: 85,
+            &quot;width&quot;: 295,
+            &quot;right&quot;: 380,
+            &quot;bottom&quot;: 313.890625,
+            &quot;height&quot;: 16
+        }
+    },
+    {
+        &quot;title&quot;: &quot;Draft of '$:/core/modules/widgets/keyboard-snippets.js'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/core/modules/widgets/keyboard-snippets.js&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of '$:/core/modules/widgets/keyboard-snippets.js'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/core/modules/widgets/keyboard-snippets.js&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of '$:/core/modules/widgets/keyboard-snippets.js'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/core/modules/widgets/keyboard-snippets.js&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of '$:/core/modules/widgets/keyboard-snippets.js'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/core/modules/widgets/keyboard-snippets.js&quot;
     }
 ]</pre>
 </div>
 <div title="$:/isEncrypted">
 <pre>no</pre>
+</div>
+<div created="20140418175933770" modified="20140418180839226" tags="plugin" title="$:/plugins/danielo/keyboardSnippets/KEYCODES" type="application/json">
+<pre>{
+  &quot;backspace&quot; : &quot;8&quot;,
+  &quot;tab&quot; : &quot;9&quot;,
+  &quot;enter&quot; : &quot;13&quot;,
+  &quot;shift&quot; : &quot;16&quot;,
+  &quot;ctrl&quot; : &quot;17&quot;,
+  &quot;alt&quot; : &quot;18&quot;,
+  &quot;pause_break&quot; : &quot;19&quot;,
+  &quot;caps_lock&quot; : &quot;20&quot;,
+  &quot;escape&quot; : &quot;27&quot;,
+  &quot;page_up&quot; : &quot;33&quot;,
+  &quot;page down&quot; : &quot;34&quot;,
+  &quot;end&quot; : &quot;35&quot;,
+  &quot;home&quot; : &quot;36&quot;,
+  &quot;left_arrow&quot; : &quot;37&quot;,
+  &quot;up_arrow&quot; : &quot;38&quot;,
+  &quot;right_arrow&quot; : &quot;39&quot;,
+  &quot;down_arrow&quot; : &quot;40&quot;,
+  &quot;insert&quot; : &quot;45&quot;,
+  &quot;delete&quot; : &quot;46&quot;,
+  &quot;0&quot; : &quot;48&quot;,
+  &quot;1&quot; : &quot;49&quot;,
+  &quot;2&quot; : &quot;50&quot;,
+  &quot;3&quot; : &quot;51&quot;,
+  &quot;4&quot; : &quot;52&quot;,
+  &quot;5&quot; : &quot;53&quot;,
+  &quot;6&quot; : &quot;54&quot;,
+  &quot;7&quot; : &quot;55&quot;,
+  &quot;8&quot; : &quot;56&quot;,
+  &quot;9&quot; : &quot;57&quot;,
+  &quot;a&quot; : &quot;65&quot;,
+  &quot;b&quot; : &quot;66&quot;,
+  &quot;c&quot; : &quot;67&quot;,
+  &quot;d&quot; : &quot;68&quot;,
+  &quot;e&quot; : &quot;69&quot;,
+  &quot;f&quot; : &quot;70&quot;,
+  &quot;g&quot; : &quot;71&quot;,
+  &quot;h&quot; : &quot;72&quot;,
+  &quot;i&quot; : &quot;73&quot;,
+  &quot;j&quot; : &quot;74&quot;,
+  &quot;k&quot; : &quot;75&quot;,
+  &quot;l&quot; : &quot;76&quot;,
+  &quot;m&quot; : &quot;77&quot;,
+  &quot;n&quot; : &quot;78&quot;,
+  &quot;o&quot; : &quot;79&quot;,
+  &quot;p&quot; : &quot;80&quot;,
+  &quot;q&quot; : &quot;81&quot;,
+  &quot;r&quot; : &quot;82&quot;,
+  &quot;s&quot; : &quot;83&quot;,
+  &quot;t&quot; : &quot;84&quot;,
+  &quot;u&quot; : &quot;85&quot;,
+  &quot;v&quot; : &quot;86&quot;,
+  &quot;w&quot; : &quot;87&quot;,
+  &quot;x&quot; : &quot;88&quot;,
+  &quot;y&quot; : &quot;89&quot;,
+  &quot;z&quot; : &quot;90&quot;,
+  &quot;left_window key&quot; : &quot;91&quot;,
+  &quot;right_window key&quot; : &quot;92&quot;,
+  &quot;select_key&quot; : &quot;93&quot;,
+  &quot;numpad 0&quot; : &quot;96&quot;,
+  &quot;numpad 1&quot; : &quot;97&quot;,
+  &quot;numpad 2&quot; : &quot;98&quot;,
+  &quot;numpad 3&quot; : &quot;99&quot;,
+  &quot;numpad 4&quot; : &quot;100&quot;,
+  &quot;numpad 5&quot; : &quot;101&quot;,
+  &quot;numpad 6&quot; : &quot;102&quot;,
+  &quot;numpad 7&quot; : &quot;103&quot;,
+  &quot;numpad 8&quot; : &quot;104&quot;,
+  &quot;numpad 9&quot; : &quot;105&quot;,
+  &quot;multiply&quot; : &quot;106&quot;,
+  &quot;add&quot; : &quot;107&quot;,
+  &quot;subtract&quot; : &quot;109&quot;,
+  &quot;decimal point&quot; : &quot;110&quot;,
+  &quot;divide&quot; : &quot;111&quot;,
+  &quot;f1&quot; : &quot;112&quot;,
+  &quot;f2&quot; : &quot;113&quot;,
+  &quot;f3&quot; : &quot;114&quot;,
+  &quot;f4&quot; : &quot;115&quot;,
+  &quot;f5&quot; : &quot;116&quot;,
+  &quot;f6&quot; : &quot;117&quot;,
+  &quot;f7&quot; : &quot;118&quot;,
+  &quot;f8&quot; : &quot;119&quot;,
+  &quot;f9&quot; : &quot;120&quot;,
+  &quot;f10&quot; : &quot;121&quot;,
+  &quot;f11&quot; : &quot;122&quot;,
+  &quot;f12&quot; : &quot;123&quot;,
+  &quot;num_lock&quot; : &quot;144&quot;,
+  &quot;scroll_lock&quot; : &quot;145&quot;,
+  &quot;semi_colon&quot; : &quot;186&quot;,
+  &quot;equal_sign&quot; : &quot;187&quot;,
+  &quot;comma&quot; : &quot;188&quot;,
+  &quot;dash&quot; : &quot;189&quot;,
+  &quot;period&quot; : &quot;190&quot;,
+  &quot;forward_slash&quot; : &quot;191&quot;,
+  &quot;grave_accent&quot; : &quot;192&quot;,
+  &quot;open_bracket&quot; : &quot;219&quot;,
+  &quot;backslash&quot; : &quot;220&quot;,
+  &quot;closebracket&quot; : &quot;221&quot;,
+  &quot;single_quote&quot; : &quot;222&quot;
+ }</pre>
+</div>
+<div created="20140418183742933" modified="20140418184001124" tags="plugin" title="$:/plugins/danielo/keyboardSnippets/KEYMAP" type="application/json">
+<pre>{&quot;8&quot;:&quot;backspace&quot;,&quot;9&quot;:&quot;tab&quot;,&quot;13&quot;:&quot;enter&quot;,&quot;16&quot;:&quot;shift&quot;,&quot;17&quot;:&quot;ctrl&quot;,&quot;18&quot;:&quot;alt&quot;,&quot;19&quot;:&quot;pause_break&quot;,&quot;20&quot;:&quot;caps_lock&quot;,&quot;27&quot;:&quot;escape&quot;,&quot;33&quot;:&quot;page_up&quot;,&quot;34&quot;:&quot;page down&quot;,&quot;35&quot;:&quot;end&quot;,&quot;36&quot;:&quot;home&quot;,&quot;37&quot;:&quot;left_arrow&quot;,&quot;38&quot;:&quot;up_arrow&quot;,&quot;39&quot;:&quot;right_arrow&quot;,&quot;40&quot;:&quot;down_arrow&quot;,&quot;45&quot;:&quot;insert&quot;,&quot;46&quot;:&quot;delete&quot;,&quot;48&quot;:&quot;0&quot;,&quot;49&quot;:&quot;1&quot;,&quot;50&quot;:&quot;2&quot;,&quot;51&quot;:&quot;3&quot;,&quot;52&quot;:&quot;4&quot;,&quot;53&quot;:&quot;5&quot;,&quot;54&quot;:&quot;6&quot;,&quot;55&quot;:&quot;7&quot;,&quot;56&quot;:&quot;8&quot;,&quot;57&quot;:&quot;9&quot;,&quot;65&quot;:&quot;a&quot;,&quot;66&quot;:&quot;b&quot;,&quot;67&quot;:&quot;c&quot;,&quot;68&quot;:&quot;d&quot;,&quot;69&quot;:&quot;e&quot;,&quot;70&quot;:&quot;f&quot;,&quot;71&quot;:&quot;g&quot;,&quot;72&quot;:&quot;h&quot;,&quot;73&quot;:&quot;i&quot;,&quot;74&quot;:&quot;j&quot;,&quot;75&quot;:&quot;k&quot;,&quot;76&quot;:&quot;l&quot;,&quot;77&quot;:&quot;m&quot;,&quot;78&quot;:&quot;n&quot;,&quot;79&quot;:&quot;o&quot;,&quot;80&quot;:&quot;p&quot;,&quot;81&quot;:&quot;q&quot;,&quot;82&quot;:&quot;r&quot;,&quot;83&quot;:&quot;s&quot;,&quot;84&quot;:&quot;t&quot;,&quot;85&quot;:&quot;u&quot;,&quot;86&quot;:&quot;v&quot;,&quot;87&quot;:&quot;w&quot;,&quot;88&quot;:&quot;x&quot;,&quot;89&quot;:&quot;y&quot;,&quot;90&quot;:&quot;z&quot;,&quot;91&quot;:&quot;left_window key&quot;,&quot;92&quot;:&quot;right_window key&quot;,&quot;93&quot;:&quot;select_key&quot;,&quot;96&quot;:&quot;numpad 0&quot;,&quot;97&quot;:&quot;numpad 1&quot;,&quot;98&quot;:&quot;numpad 2&quot;,&quot;99&quot;:&quot;numpad 3&quot;,&quot;100&quot;:&quot;numpad 4&quot;,&quot;101&quot;:&quot;numpad 5&quot;,&quot;102&quot;:&quot;numpad 6&quot;,&quot;103&quot;:&quot;numpad 7&quot;,&quot;104&quot;:&quot;numpad 8&quot;,&quot;105&quot;:&quot;numpad 9&quot;,&quot;106&quot;:&quot;multiply&quot;,&quot;107&quot;:&quot;add&quot;,&quot;109&quot;:&quot;subtract&quot;,&quot;110&quot;:&quot;decimal point&quot;,&quot;111&quot;:&quot;divide&quot;,&quot;112&quot;:&quot;f1&quot;,&quot;113&quot;:&quot;f2&quot;,&quot;114&quot;:&quot;f3&quot;,&quot;115&quot;:&quot;f4&quot;,&quot;116&quot;:&quot;f5&quot;,&quot;117&quot;:&quot;f6&quot;,&quot;118&quot;:&quot;f7&quot;,&quot;119&quot;:&quot;f8&quot;,&quot;120&quot;:&quot;f9&quot;,&quot;121&quot;:&quot;f10&quot;,&quot;122&quot;:&quot;f11&quot;,&quot;123&quot;:&quot;f12&quot;,&quot;144&quot;:&quot;num_lock&quot;,&quot;145&quot;:&quot;scroll_lock&quot;,&quot;186&quot;:&quot;semi_colon&quot;,&quot;187&quot;:&quot;equal_sign&quot;,&quot;188&quot;:&quot;comma&quot;,&quot;189&quot;:&quot;dash&quot;,&quot;190&quot;:&quot;period&quot;,&quot;191&quot;:&quot;forward_slash&quot;,&quot;192&quot;:&quot;grave_accent&quot;,&quot;219&quot;:&quot;open_bracket&quot;,&quot;220&quot;:&quot;backslash&quot;,&quot;221&quot;:&quot;closebracket&quot;,&quot;222&quot;:&quot;single_quote&quot;}</pre>
 </div>
 <div dependents="" description="Adds support for HTML5 full screen mode" plugin-type="plugin" title="$:/plugins/tiddlywiki/fullscreen" type="application/json" version="5.0.8-beta">
 <pre>{
@@ -2841,7 +3123,7 @@ if (event.srcElement)  myField = event.srcElement;
 }</pre>
 </div>
 <div title="$:/ShowEditPreview">
-<pre>yes</pre>
+<pre>no</pre>
 </div>
 <div title="$:/state/tab-{-618750197}">
 <pre>$:/core/ui/AdvancedSearch/System</pre>
@@ -2849,13 +3131,22 @@ if (event.srcElement)  myField = event.srcElement;
 <div title="$:/state/tab-{1649180219}">
 <pre>$:/core/ui/TiddlerInfo/Fields</pre>
 </div>
-<div list="$:/AdvancedSearch $:/core/modules/widgets/keyboard-snippets.js $:/ControlPanel GettingStarted" title="$:/StoryList">
+<div title="$:/state/tab-{260706635}">
+<pre>$:/core/ui/ControlPanel/Plugins</pre>
+</div>
+<div title="$:/state/tab/sidebar-{1743827719}">
+<pre>$:/core/ui/SideBar/More</pre>
+</div>
+<div list="$:/AdvancedSearch $:/core/modules/widgets/keyboard-snippets.js $:/plugins/danielo/keyboardSnippets/KEYMAP $:/plugins/danielo/keyboardSnippets/KEYCODES GettingStarted" title="$:/StoryList">
 <pre></pre>
 </div>
-<div created="20140418153514636" modified="20140418155233943" title="$:/temp/advancedsearch">
-<pre>snippet</pre>
+<div created="20140418153514636" modified="20140418184454578" title="$:/temp/advancedsearch">
+<pre>keyboard</pre>
 </div>
 <div created="20140418153530909" modified="20140418153534185" title="$:/temp/NewFieldName">
+<pre></pre>
+</div>
+<div created="20140418180414622" modified="20140418180415952" title="$:/temp/NewTagName">
 <pre></pre>
 </div>
 <div dependents="$:/themes/tiddlywiki/vanilla" description="A clean theme that emphasises individual tiddlers" name="Snow White" plugin-type="theme" title="$:/themes/tiddlywiki/snowwhite" type="application/json" version="5.0.8-beta">
