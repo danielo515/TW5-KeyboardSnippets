@@ -60,7 +60,7 @@ if (event.srcElement)  myField = event.srcElement;
  {
             event.preventDefault();
 			event.stopPropagation();
-             myValue=keyCodes[event.keyCode];
+            myValue=keyCodes[event.keyCode];
 
         //Internet explorer
             if (document.selection) {
@@ -85,6 +85,8 @@ if (event.srcElement)  myField = event.srcElement;
             } else {
                 myField.value += myValue;
             }
+
+    this.saveChanges(this.domNodes[0].value);
     }
 };
 
