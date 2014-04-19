@@ -129,11 +129,7 @@ Error message and password prompt
 
 <li>$:/isEncrypted</li>
 
-<li>$:/plugins/danielo/keyboardSnippets/KEYBINDINGS</li>
-
-<li>$:/plugins/danielo/keyboardSnippets/KEYCODES</li>
-
-<li>$:/plugins/danielo/keyboardSnippets/KEYMAP</li>
+<li>$:/plugins/danielo/keyboardSnippets</li>
 
 <li>$:/plugins/tiddlywiki/fullscreen</li>
 
@@ -2773,7 +2769,7 @@ EditTextWidget.prototype.insertAtCursor = function (event) {
 <div created="20140419071422078" modified="20140419071422078" title="$:/DefaultTiddlers">
 <pre>[list[$:/StoryList]]</pre>
 </div>
-<div current-tiddler="Draft of 'New Tiddler'" modified="20140419081040793" modifier="danielo" title="$:/HistoryList" type="application/json">
+<div current-tiddler="Draft of 'New Tiddler'" modified="20140419082054192" modifier="danielo" title="$:/HistoryList" type="application/json">
 <pre>[
     {
         &quot;title&quot;: &quot;Draft of 'GettingStarted'&quot;
@@ -3311,131 +3307,47 @@ EditTextWidget.prototype.insertAtCursor = function (event) {
     },
     {
         &quot;title&quot;: &quot;Draft of 'New Tiddler'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/ControlPanel&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/plugins/danielo/keyboard-snippets&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 273,
+            &quot;left&quot;: 90,
+            &quot;width&quot;: 179,
+            &quot;right&quot;: 269,
+            &quot;bottom&quot;: 309,
+            &quot;height&quot;: 36
+        }
+    },
+    {
+        &quot;title&quot;: &quot;Draft of '$:/plugins/danielo/keyboard-snippets'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'New Tiddler'&quot;
     }
 ]</pre>
 </div>
 <div title="$:/isEncrypted">
 <pre>no</pre>
 </div>
-<div created="20140419050820052" creator="danielo" modified="20140419081035391" modifier="danielo" tags="plugin" title="$:/plugins/danielo/keyboardSnippets/KEYBINDINGS" type="application/json">
-<pre>{ 
- &quot;ctrl+b&quot; : { &quot;pre&quot;:&quot;''&quot;, &quot;post&quot;:&quot;''&quot;}, 
- &quot;ctrl+i&quot; : { &quot;pre&quot;:&quot;//&quot;, &quot;post&quot;:&quot;//&quot;},
- &quot;ctrl+o&quot; : { &quot;pre&quot;:&quot;\n#&quot;, &quot;post&quot;:&quot; &quot;},
- &quot;ctrl+l&quot; : { &quot;pre&quot;:&quot;\n*&quot;, &quot;post&quot;:&quot; &quot;},
- &quot;ctrl+u&quot; : { &quot;pre&quot;:&quot;__&quot;, &quot;post&quot;:&quot;__&quot;}, 
- &quot;ctrl+k&quot; : { &quot;pre&quot;:&quot;\n```\n&quot;, &quot;post&quot;:&quot;```&quot;}, 
- &quot;ctrl+s&quot; : { &quot;pre&quot;:&quot;,,&quot;, &quot;post&quot;:&quot;,,&quot;}, 
- &quot;alt+t&quot; : { &quot;pre&quot;:&quot;|&quot;, &quot;post&quot;:&quot;|&quot;},
- &quot;alt+h&quot; : { &quot;pre&quot;:&quot;|!&quot;, &quot;post&quot;:&quot;|&quot;},
- &quot;alt+s&quot; : { &quot;pre&quot;:&quot;~~&quot;, &quot;post&quot;:&quot;~~&quot;}
-
-}</pre>
-</div>
-<div created="20140418175933770" modified="20140418180839226" tags="plugin" title="$:/plugins/danielo/keyboardSnippets/KEYCODES" type="application/json">
+<div dependencies="no dependencies" description="add keyboard shortcuts to text inputs" modified="20140419082259697" modifier="danielo" plugin-type="plugin" title="$:/plugins/danielo/keyboardSnippets" type="application/json" version="0.0.2">
 <pre>{
-  &quot;backspace&quot; : &quot;8&quot;,
-  &quot;tab&quot; : &quot;9&quot;,
-  &quot;enter&quot; : &quot;13&quot;,
-  &quot;shift&quot; : &quot;16&quot;,
-  &quot;ctrl&quot; : &quot;17&quot;,
-  &quot;alt&quot; : &quot;18&quot;,
-  &quot;pause_break&quot; : &quot;19&quot;,
-  &quot;caps_lock&quot; : &quot;20&quot;,
-  &quot;escape&quot; : &quot;27&quot;,
-  &quot;page_up&quot; : &quot;33&quot;,
-  &quot;page down&quot; : &quot;34&quot;,
-  &quot;end&quot; : &quot;35&quot;,
-  &quot;home&quot; : &quot;36&quot;,
-  &quot;left_arrow&quot; : &quot;37&quot;,
-  &quot;up_arrow&quot; : &quot;38&quot;,
-  &quot;right_arrow&quot; : &quot;39&quot;,
-  &quot;down_arrow&quot; : &quot;40&quot;,
-  &quot;insert&quot; : &quot;45&quot;,
-  &quot;delete&quot; : &quot;46&quot;,
-  &quot;0&quot; : &quot;48&quot;,
-  &quot;1&quot; : &quot;49&quot;,
-  &quot;2&quot; : &quot;50&quot;,
-  &quot;3&quot; : &quot;51&quot;,
-  &quot;4&quot; : &quot;52&quot;,
-  &quot;5&quot; : &quot;53&quot;,
-  &quot;6&quot; : &quot;54&quot;,
-  &quot;7&quot; : &quot;55&quot;,
-  &quot;8&quot; : &quot;56&quot;,
-  &quot;9&quot; : &quot;57&quot;,
-  &quot;a&quot; : &quot;65&quot;,
-  &quot;b&quot; : &quot;66&quot;,
-  &quot;c&quot; : &quot;67&quot;,
-  &quot;d&quot; : &quot;68&quot;,
-  &quot;e&quot; : &quot;69&quot;,
-  &quot;f&quot; : &quot;70&quot;,
-  &quot;g&quot; : &quot;71&quot;,
-  &quot;h&quot; : &quot;72&quot;,
-  &quot;i&quot; : &quot;73&quot;,
-  &quot;j&quot; : &quot;74&quot;,
-  &quot;k&quot; : &quot;75&quot;,
-  &quot;l&quot; : &quot;76&quot;,
-  &quot;m&quot; : &quot;77&quot;,
-  &quot;n&quot; : &quot;78&quot;,
-  &quot;o&quot; : &quot;79&quot;,
-  &quot;p&quot; : &quot;80&quot;,
-  &quot;q&quot; : &quot;81&quot;,
-  &quot;r&quot; : &quot;82&quot;,
-  &quot;s&quot; : &quot;83&quot;,
-  &quot;t&quot; : &quot;84&quot;,
-  &quot;u&quot; : &quot;85&quot;,
-  &quot;v&quot; : &quot;86&quot;,
-  &quot;w&quot; : &quot;87&quot;,
-  &quot;x&quot; : &quot;88&quot;,
-  &quot;y&quot; : &quot;89&quot;,
-  &quot;z&quot; : &quot;90&quot;,
-  &quot;left_window key&quot; : &quot;91&quot;,
-  &quot;right_window key&quot; : &quot;92&quot;,
-  &quot;select_key&quot; : &quot;93&quot;,
-  &quot;numpad 0&quot; : &quot;96&quot;,
-  &quot;numpad 1&quot; : &quot;97&quot;,
-  &quot;numpad 2&quot; : &quot;98&quot;,
-  &quot;numpad 3&quot; : &quot;99&quot;,
-  &quot;numpad 4&quot; : &quot;100&quot;,
-  &quot;numpad 5&quot; : &quot;101&quot;,
-  &quot;numpad 6&quot; : &quot;102&quot;,
-  &quot;numpad 7&quot; : &quot;103&quot;,
-  &quot;numpad 8&quot; : &quot;104&quot;,
-  &quot;numpad 9&quot; : &quot;105&quot;,
-  &quot;multiply&quot; : &quot;106&quot;,
-  &quot;add&quot; : &quot;107&quot;,
-  &quot;subtract&quot; : &quot;109&quot;,
-  &quot;decimal point&quot; : &quot;110&quot;,
-  &quot;divide&quot; : &quot;111&quot;,
-  &quot;f1&quot; : &quot;112&quot;,
-  &quot;f2&quot; : &quot;113&quot;,
-  &quot;f3&quot; : &quot;114&quot;,
-  &quot;f4&quot; : &quot;115&quot;,
-  &quot;f5&quot; : &quot;116&quot;,
-  &quot;f6&quot; : &quot;117&quot;,
-  &quot;f7&quot; : &quot;118&quot;,
-  &quot;f8&quot; : &quot;119&quot;,
-  &quot;f9&quot; : &quot;120&quot;,
-  &quot;f10&quot; : &quot;121&quot;,
-  &quot;f11&quot; : &quot;122&quot;,
-  &quot;f12&quot; : &quot;123&quot;,
-  &quot;num_lock&quot; : &quot;144&quot;,
-  &quot;scroll_lock&quot; : &quot;145&quot;,
-  &quot;semi_colon&quot; : &quot;186&quot;,
-  &quot;equal_sign&quot; : &quot;187&quot;,
-  &quot;comma&quot; : &quot;188&quot;,
-  &quot;dash&quot; : &quot;189&quot;,
-  &quot;period&quot; : &quot;190&quot;,
-  &quot;forward_slash&quot; : &quot;191&quot;,
-  &quot;grave_accent&quot; : &quot;192&quot;,
-  &quot;open_bracket&quot; : &quot;219&quot;,
-  &quot;backslash&quot; : &quot;220&quot;,
-  &quot;closebracket&quot; : &quot;221&quot;,
-  &quot;single_quote&quot; : &quot;222&quot;
- }</pre>
-</div>
-<div created="20140418183742933" modified="20140418184001124" tags="plugin" title="$:/plugins/danielo/keyboardSnippets/KEYMAP" type="application/json">
-<pre>{&quot;8&quot;:&quot;backspace&quot;,&quot;9&quot;:&quot;tab&quot;,&quot;13&quot;:&quot;enter&quot;,&quot;16&quot;:&quot;shift&quot;,&quot;17&quot;:&quot;ctrl&quot;,&quot;18&quot;:&quot;alt&quot;,&quot;19&quot;:&quot;pause_break&quot;,&quot;20&quot;:&quot;caps_lock&quot;,&quot;27&quot;:&quot;escape&quot;,&quot;33&quot;:&quot;page_up&quot;,&quot;34&quot;:&quot;page down&quot;,&quot;35&quot;:&quot;end&quot;,&quot;36&quot;:&quot;home&quot;,&quot;37&quot;:&quot;left_arrow&quot;,&quot;38&quot;:&quot;up_arrow&quot;,&quot;39&quot;:&quot;right_arrow&quot;,&quot;40&quot;:&quot;down_arrow&quot;,&quot;45&quot;:&quot;insert&quot;,&quot;46&quot;:&quot;delete&quot;,&quot;48&quot;:&quot;0&quot;,&quot;49&quot;:&quot;1&quot;,&quot;50&quot;:&quot;2&quot;,&quot;51&quot;:&quot;3&quot;,&quot;52&quot;:&quot;4&quot;,&quot;53&quot;:&quot;5&quot;,&quot;54&quot;:&quot;6&quot;,&quot;55&quot;:&quot;7&quot;,&quot;56&quot;:&quot;8&quot;,&quot;57&quot;:&quot;9&quot;,&quot;65&quot;:&quot;a&quot;,&quot;66&quot;:&quot;b&quot;,&quot;67&quot;:&quot;c&quot;,&quot;68&quot;:&quot;d&quot;,&quot;69&quot;:&quot;e&quot;,&quot;70&quot;:&quot;f&quot;,&quot;71&quot;:&quot;g&quot;,&quot;72&quot;:&quot;h&quot;,&quot;73&quot;:&quot;i&quot;,&quot;74&quot;:&quot;j&quot;,&quot;75&quot;:&quot;k&quot;,&quot;76&quot;:&quot;l&quot;,&quot;77&quot;:&quot;m&quot;,&quot;78&quot;:&quot;n&quot;,&quot;79&quot;:&quot;o&quot;,&quot;80&quot;:&quot;p&quot;,&quot;81&quot;:&quot;q&quot;,&quot;82&quot;:&quot;r&quot;,&quot;83&quot;:&quot;s&quot;,&quot;84&quot;:&quot;t&quot;,&quot;85&quot;:&quot;u&quot;,&quot;86&quot;:&quot;v&quot;,&quot;87&quot;:&quot;w&quot;,&quot;88&quot;:&quot;x&quot;,&quot;89&quot;:&quot;y&quot;,&quot;90&quot;:&quot;z&quot;,&quot;91&quot;:&quot;left_window key&quot;,&quot;92&quot;:&quot;right_window key&quot;,&quot;93&quot;:&quot;select_key&quot;,&quot;96&quot;:&quot;numpad 0&quot;,&quot;97&quot;:&quot;numpad 1&quot;,&quot;98&quot;:&quot;numpad 2&quot;,&quot;99&quot;:&quot;numpad 3&quot;,&quot;100&quot;:&quot;numpad 4&quot;,&quot;101&quot;:&quot;numpad 5&quot;,&quot;102&quot;:&quot;numpad 6&quot;,&quot;103&quot;:&quot;numpad 7&quot;,&quot;104&quot;:&quot;numpad 8&quot;,&quot;105&quot;:&quot;numpad 9&quot;,&quot;106&quot;:&quot;multiply&quot;,&quot;107&quot;:&quot;add&quot;,&quot;109&quot;:&quot;subtract&quot;,&quot;110&quot;:&quot;decimal point&quot;,&quot;111&quot;:&quot;divide&quot;,&quot;112&quot;:&quot;f1&quot;,&quot;113&quot;:&quot;f2&quot;,&quot;114&quot;:&quot;f3&quot;,&quot;115&quot;:&quot;f4&quot;,&quot;116&quot;:&quot;f5&quot;,&quot;117&quot;:&quot;f6&quot;,&quot;118&quot;:&quot;f7&quot;,&quot;119&quot;:&quot;f8&quot;,&quot;120&quot;:&quot;f9&quot;,&quot;121&quot;:&quot;f10&quot;,&quot;122&quot;:&quot;f11&quot;,&quot;123&quot;:&quot;f12&quot;,&quot;144&quot;:&quot;num_lock&quot;,&quot;145&quot;:&quot;scroll_lock&quot;,&quot;186&quot;:&quot;semi_colon&quot;,&quot;187&quot;:&quot;equal_sign&quot;,&quot;188&quot;:&quot;comma&quot;,&quot;189&quot;:&quot;dash&quot;,&quot;190&quot;:&quot;period&quot;,&quot;191&quot;:&quot;forward_slash&quot;,&quot;192&quot;:&quot;grave_accent&quot;,&quot;219&quot;:&quot;open_bracket&quot;,&quot;220&quot;:&quot;backslash&quot;,&quot;221&quot;:&quot;closebracket&quot;,&quot;222&quot;:&quot;single_quote&quot;}</pre>
+    &quot;tiddlers&quot;: {
+        &quot;$:/plugins/danielo/keyboardSnippets/keyboard-snippets.js&quot;: {
+            &quot;modified&quot;: &quot;20140419065435977&quot;,
+            &quot;modifier&quot;: &quot;danielo&quot;,
+            &quot;text&quot;: &quot;/*\\\ntitle: $:/core/modules/widgets/keyboard-snippets.js\ntype: application/javascript\nmodule-type: widget\n\nEdit-text widget\n\n\\*/\n(function(){\n\n/*jslint node: true, browser: true */\n/*global $tw: false */\n\&quot;use strict\&quot;;\n\nvar EditTextWidget = require(\&quot;$:/core/modules/widgets/edit-text.js\&quot;)[\&quot;edit-text\&quot;];\n\n/*\nThe edit-text widget calls this method just after inserting its dom nodes\n*/\nEditTextWidget.prototype.postRender = function() {\n\tvar self = this;\n\tvar domNode = self.domNodes[0];\n\tthis.KEYMAP = this.wiki.getTiddlerData(\&quot;$:/plugins/danielo/keyboardSnippets/KEYMAP\&quot;);\n\tthis.KEYBINDINGS = this.parseKeyBindings(this.wiki.getTiddlerData(\&quot;$:/plugins/danielo/keyboardSnippets/KEYBINDINGS\&quot;));\n\t$tw.utils.addEventListeners(domNode,[\n\t\t{name: \&quot;keydown\&quot;, handlerObject: this, handlerMethod: \&quot;insertAtCursor\&quot;}\n\t]);\n\n\n};\n\n\nEditTextWidget.prototype.createKeySnippet = function(preTag,postTag){\n return {pre:preTag, post:postTag, length:preTag.length+postTag.length };\n};\n\n\nEditTextWidget.prototype.getKeyName = function (keyCode){\n  return this.KEYMAP[keyCode];\n};\n\n\nEditTextWidget.prototype.parseKeyBindings = function (keyCombinations){\nvar keybindings={}; \nif (keyCombinations) {\n\tfor(var comb in keyCombinations){\n\t\t//console.log(keyCombinations[comb]);\n\t\tkeybindings[comb.toLowerCase()]=this.createKeySnippet(keyCombinations[comb].pre,keyCombinations[comb].post);\n\t}\n\treturn keybindings;\n}\n\n keybindings={\n\n\t\t \&quot;ctrl+b\&quot; : this.createKeySnippet(\&quot;''\&quot;,\&quot;''\&quot;), //b -- bold\n\t\t \&quot;ctrl+i\&quot; : this.createKeySnippet(\&quot;//\&quot;,\&quot;//\&quot;), //i --italics\n\t\t \&quot;ctrl+o\&quot; : this.createKeySnippet(\&quot;\\n#\&quot;,\&quot; \&quot;), //o -- Ordered list\n\t\t \&quot;ctrl+u\&quot; : this.createKeySnippet(\&quot;__\&quot;,\&quot;__\&quot;), //u -- understrike list\n\t\t \&quot;ctrl+k\&quot; : this.createKeySnippet(\&quot;\\n```\\n\&quot;,\&quot;```\&quot;), //k -- code\n\t\t \&quot;ctrl+s\&quot; : this.createKeySnippet(\&quot;,,\&quot;,\&quot;,,\&quot;), //s -- subscript\n\t\t \&quot;ctrl+l\&quot; : this.createKeySnippet(\&quot;\\n*\&quot;,\&quot; \&quot;), //l -- list\n\t\t};\n\treturn keybindings;\n\t\t\n\n};\n\nEditTextWidget.prototype.composeKeyCombo = function (event){\nvar keyCombo=\&quot;\&quot;;\n            if(event.ctrlKey)keyCombo+=\&quot;ctrl+\&quot;;\n            if(event.shiftKey)keyCombo+=\&quot;shift+\&quot;;\n\t\t\tif(event.altKey)keyCombo+=\&quot;alt+\&quot;;\n\t\t\tkeyCombo+=this.getKeyName(event.keyCode);\n\nreturn keyCombo;\n\n};\n\n\n\nEditTextWidget.prototype.insertAtCursor = function (event) {\n    var snippet , myField=this.domNodes[0];\n /*if (event.srcElement)  myField = event.srcElement;\n else if (event.target) myField = event.target;*/\n \n\n if(snippet=this.KEYBINDINGS[this.composeKeyCombo(event)] )\n  //para evitar sobreescribir otros eventos solo reaccionamos ante combinaciones que\n  //estén en nuestro map de KEYBINDINGS\n {\n            event.preventDefault();\n\t\t\tevent.stopPropagation();\n        //Internet explorer\n            if (document.selection) {\n                myField.focus();\n                var sel = document.selection.createRange();\n                sel.text = snippet;\n            }\n            //MOZILLA and others\n            else if (myField.selectionStart || myField.selectionStart == '0') {\n                var startPos = myField.selectionStart;\n                var endPos = myField.selectionEnd;\n                var selected=myField.value.substring(startPos,endPos);\n                //console.log(\&quot;Sel Start: \&quot;+startPos+\&quot; Ends at \&quot;+ endPos);\n                myField.value = myField.value.substring(0, startPos)\n                    + snippet.pre + selected + snippet.post\n                    + myField.value.substring(endPos, myField.value.length);\n\n                var middle=Math.round((snippet.length/2));\n                //console.log(middle);\n                myField.selectionStart = startPos + middle;\n                myField.selectionEnd = startPos + middle;\n            } else {\n                myField.value += snippet;\n            }\n\n    this.saveChanges(this.domNodes[0].value);\n    }\n};\n\n})();&quot;,
+            &quot;type&quot;: &quot;application/javascript&quot;,
+            &quot;title&quot;: &quot;$:/plugins/danielo/keyboardSnippets/keyboard-snippets.js&quot;,
+            &quot;tags&quot;: &quot;plugin&quot;,
+            &quot;module-type&quot;: &quot;widget&quot;,
+            &quot;created&quot;: &quot;20140418153435777&quot;
+        }
+    }
+}</pre>
 </div>
 <div dependents="" description="Adds support for HTML5 full screen mode" plugin-type="plugin" title="$:/plugins/tiddlywiki/fullscreen" type="application/json" version="5.0.8-beta">
 <pre>{
@@ -3465,7 +3377,7 @@ EditTextWidget.prototype.insertAtCursor = function (event) {
 <pre>$:/core/ui/TiddlerInfo/Fields</pre>
 </div>
 <div title="$:/state/tab-{260706635}">
-<pre>$:/core/ui/ControlPanel/Basics</pre>
+<pre>$:/core/ui/ControlPanel/Plugins</pre>
 </div>
 <div title="$:/state/tab/sidebar-{1743827719}">
 <pre>$:/core/ui/SideBar/Recent</pre>
@@ -3473,7 +3385,7 @@ EditTextWidget.prototype.insertAtCursor = function (event) {
 <div created="20140419071431470" creator="d" modified="20140419071432446" modifier="daniel" title="$:/status/UserName">
 <pre>danielo</pre>
 </div>
-<div list="packator $:/plugins/danielo/keyboardSnippets/KEYBINDINGS $:/core/modules/widgets/keyboard-snippets.js" title="$:/StoryList">
+<div list="$:/ControlPanel packator $:/plugins/danielo/keyboardSnippets/KEYBINDINGS $:/core/modules/widgets/keyboard-snippets.js" title="$:/StoryList">
 <pre></pre>
 </div>
 <div created="20140418153514636" creator="danielo" modified="20140419073826868" modifier="danielo" title="$:/temp/advancedsearch">
@@ -3488,7 +3400,7 @@ EditTextWidget.prototype.insertAtCursor = function (event) {
 <div created="20140419050624068" modified="20140419050627213" title="$:/temp/search">
 <pre></pre>
 </div>
-<div created="20140419074458588" creator="danielo" modified="20140419075735629" modifier="danielo" pluginauthor="danielo" plugindep="no dependencies" plugindesc="add keyboard shortcuts to " pluginname="keyboard-snippets" plugintype="plugin" title="$:/tempplugin">
+<div created="20140419074458588" creator="danielo" modified="20140419082247798" modifier="danielo" pluginauthor="danielo" plugindep="no dependencies" plugindesc="add keyboard shortcuts to text inputs" pluginname="keyboardSnippets" plugintype="plugin" title="$:/tempplugin">
 <pre></pre>
 </div>
 <div created="20140419074547844" creator="danielo" modified="20140419074554909" modifier="danielo" title="$:/temppluginfilter">
