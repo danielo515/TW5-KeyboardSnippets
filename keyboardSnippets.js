@@ -21,6 +21,7 @@ EditTextWidget.prototype.postRender = function() {
 	var self = this;
 	var domNode = self.domNodes[0];
 	this.KEYMAP = this.wiki.getTiddlerData("$:/plugins/danielo/keyboardSnippets/KEYMAP");
+	this.KEYBINDINGS = this.parseKeyBindings(this.wiki.getTiddlerData("$:/plugins/danielo/keyboardSnippets/KEYBINDINGS"));
 	$tw.utils.addEventListeners(domNode,[
 		{name: "keydown", handlerObject: this, handlerMethod: "insertAtCursor"}
 	]);
@@ -39,22 +40,33 @@ EditTextWidget.prototype.getKeyName = function (keyCode){
 };
 
 
-
-//EDIT OR DELETE THIS FUNCTION!!!!
 EditTextWidget.prototype.parseKeyBindings = function (keyCombinations){
-for(comb in keyCombinations){
-
-
+var keybindings={}; 
+if (keyCombinations) {
+	for(var comb in keyCombinations){
+		//console.log(keyCombinations[comb]);
+		keybindings[comb.toLowerCase()]=this.createKeySnippet(keyCombinations[comb].pre,keyCombinations[comb].post);
+	}
+	return keybindings;
 }
+
+ keybindings={
+
+		 "ctrl+b" : this.createKeySnippet("''","''"), //b -- bold
+		 "ctrl+i" : this.createKeySnippet("//","//"), //i --italics
+		 "ctrl+o" : this.createKeySnippet("\n#"," "), //o -- Ordered list
+		 "ctrl+u" : this.createKeySnippet("__","__"), //u -- understrike list
+		 "ctrl+k" : this.createKeySnippet("\n```\n","```"), //k -- code
+		 "ctrl+s" : this.createKeySnippet(",,",",,"), //s -- subscript
+		 "ctrl+l" : this.createKeySnippet("\n*"," "), //l -- list
+		};
+	return keybindings;
+		
 
 };
 
-
-
-
 EditTextWidget.prototype.composeKeyCombo = function (event){
 var keyCombo="";
-
             if(event.ctrlKey)keyCombo+="ctrl+";
             if(event.shiftKey)keyCombo+="shift+";
 			if(event.altKey)keyCombo+="alt+";
@@ -67,55 +79,36 @@ return keyCombo;
 
 
 EditTextWidget.prototype.insertAtCursor = function (event) {
-    var myValue="";
-    var myField;
-if (event.srcElement)  myField = event.srcElement;
- else if (event.target) myField = event.target;
+    var snippet , myField=this.domNodes[0];
 
- var keySnippets = {
-
- "ctrl+b" : this.createKeySnippet("''","''"), //b -- bold
- "ctrl+i" : this.createKeySnippet("//","//"), //i --italics
- "ctrl+o" : this.createKeySnippet("\n#"," "), //o -- Ordered list
- "ctrl+u" : this.createKeySnippet("__","__"), //u -- understrike list
- "ctrl+k" : this.createKeySnippet("\n```\n","```"), //k -- code
- "ctrl+s" : this.createKeySnippet(",,",",,"), //s -- subscript
- "ctrl+l" : this.createKeySnippet("\n*"," "), //l -- list
-
-};
-
-//keySnippets=JSON.parse(this.wiki.getTiddlerAsJson("$:/keyboard/snippets")).text || keySnippets;
-
- if(myValue=keySnippets[this.composeKeyCombo(event)] )
+ if(snippet=this.KEYBINDINGS[this.composeKeyCombo(event)] )
   //para evitar sobreescribir otros eventos solo reaccionamos ante combinaciones que
-  //estén en nuestro map de keySnippets
+  //estén en nuestro map de KEYBINDINGS
  {
             event.preventDefault();
 			event.stopPropagation();
-            //myValue=keySnippets[this.getKeyName(event.keyCode)];
-
         //Internet explorer
             if (document.selection) {
                 myField.focus();
-                sel = document.selection.createRange();
-                sel.text = myValue;
+                var sel = document.selection.createRange();
+                sel.text = snippet;
             }
             //MOZILLA and others
             else if (myField.selectionStart || myField.selectionStart == '0') {
                 var startPos = myField.selectionStart;
                 var endPos = myField.selectionEnd;
                 var selected=myField.value.substring(startPos,endPos);
-                console.log("Sel Start: "+startPos+" Ends at "+ endPos);
+                //console.log("Sel Start: "+startPos+" Ends at "+ endPos);
                 myField.value = myField.value.substring(0, startPos)
-                    + myValue.pre + selected + myValue.post
+                    + snippet.pre + selected + snippet.post
                     + myField.value.substring(endPos, myField.value.length);
 
-                var middle=Math.round((myValue.length/2));
-                console.log(middle);
+                var middle=Math.round((snippet.length/2));
+                //console.log(middle);
                 myField.selectionStart = startPos + middle;
                 myField.selectionEnd = startPos + middle;
             } else {
-                myField.value += myValue;
+                myField.value += snippet;
             }
 
     this.saveChanges(this.domNodes[0].value);

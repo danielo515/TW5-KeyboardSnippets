@@ -43,7 +43,7 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF S
 DAMAGE.
 " />
 <link id="faviconLink" rel="shortcut icon" href="favicon.ico">
-<title>My TiddlyWiki — a non-linear personal web notebook</title>
+<title>keyboardShortucts — Add keyboard shortucts to edit text fields.</title>
 <!--~~ This is a Tiddlywiki file. The points of interest in the file are marked with this pattern ~~--><!--~~ Raw markup ~~-->
 
 </head>
@@ -123,9 +123,13 @@ Error message and password prompt
 
 <li>$:/core/modules/widgets/keyboard-snippets.js</li>
 
+<li>$:/DefaultTiddlers</li>
+
 <li>$:/HistoryList</li>
 
 <li>$:/isEncrypted</li>
+
+<li>$:/plugins/danielo/keyboardSnippets/KEYBINDINGS</li>
 
 <li>$:/plugins/danielo/keyboardSnippets/KEYCODES</li>
 
@@ -135,6 +139,10 @@ Error message and password prompt
 
 <li>$:/ShowEditPreview</li>
 
+<li>$:/SiteSubtitle</li>
+
+<li>$:/SiteTitle</li>
+
 <li>$:/state/tab-{-618750197}</li>
 
 <li>$:/state/tab-{1649180219}</li>
@@ -143,6 +151,8 @@ Error message and password prompt
 
 <li>$:/state/tab/sidebar-{1743827719}</li>
 
+<li>$:/status/UserName</li>
+
 <li>$:/StoryList</li>
 
 <li>$:/temp/advancedsearch</li>
@@ -150,6 +160,8 @@ Error message and password prompt
 <li>$:/temp/NewFieldName</li>
 
 <li>$:/temp/NewTagName</li>
+
+<li>$:/temp/search</li>
 
 <li>$:/themes/tiddlywiki/snowwhite</li>
 
@@ -2625,7 +2637,7 @@ Error message and password prompt
     }
 }</pre>
 </div>
-<div created="20140418153435777" modified="20140418201556093" module-type="widget" title="$:/core/modules/widgets/keyboard-snippets.js" type="application/javascript">
+<div created="20140418153435777" modified="20140419065435977" module-type="widget" tags="plugin" title="$:/core/modules/widgets/keyboard-snippets.js" type="application/javascript">
 <pre>/*\
 title: $:/core/modules/widgets/keyboard-snippets.js
 type: application/javascript
@@ -2649,6 +2661,7 @@ EditTextWidget.prototype.postRender = function() {
 	var self = this;
 	var domNode = self.domNodes[0];
 	this.KEYMAP = this.wiki.getTiddlerData(&quot;$:/plugins/danielo/keyboardSnippets/KEYMAP&quot;);
+	this.KEYBINDINGS = this.parseKeyBindings(this.wiki.getTiddlerData(&quot;$:/plugins/danielo/keyboardSnippets/KEYBINDINGS&quot;));
 	$tw.utils.addEventListeners(domNode,[
 		{name: &quot;keydown&quot;, handlerObject: this, handlerMethod: &quot;insertAtCursor&quot;}
 	]);
@@ -2668,32 +2681,32 @@ EditTextWidget.prototype.getKeyName = function (keyCode){
 
 
 EditTextWidget.prototype.parseKeyBindings = function (keyCombinations){
-for(comb in keyCombinations){
-    var components = comb.split(&quot;+&quot;);
-
-    for(var t=0; t&lt;components.length; t++) {
-		var s = components[t].toLowerCase();
-		// Look for modifier keys
-		if(s === &quot;ctrl&quot;) {
-			info.ctrlKey = true;
-		} else if(s === &quot;shift&quot;) {
-			info.shiftKey = true;
-		} else if(s === &quot;alt&quot;) {
-			info.altKey = true;
-		}
-		// Replace named keys with their code
-		if(namedKeys[s]) {
-			info.keyCode = namedKeys[s];
-		}
+var keybindings={}; 
+if (keyCombinations) {
+	for(var comb in keyCombinations){
+		//console.log(keyCombinations[comb]);
+		keybindings[comb.toLowerCase()]=this.createKeySnippet(keyCombinations[comb].pre,keyCombinations[comb].post);
 	}
-
+	return keybindings;
 }
+
+ keybindings={
+
+		 &quot;ctrl+b&quot; : this.createKeySnippet(&quot;''&quot;,&quot;''&quot;), //b -- bold
+		 &quot;ctrl+i&quot; : this.createKeySnippet(&quot;//&quot;,&quot;//&quot;), //i --italics
+		 &quot;ctrl+o&quot; : this.createKeySnippet(&quot;\n#&quot;,&quot; &quot;), //o -- Ordered list
+		 &quot;ctrl+u&quot; : this.createKeySnippet(&quot;__&quot;,&quot;__&quot;), //u -- understrike list
+		 &quot;ctrl+k&quot; : this.createKeySnippet(&quot;\n```\n&quot;,&quot;```&quot;), //k -- code
+		 &quot;ctrl+s&quot; : this.createKeySnippet(&quot;,,&quot;,&quot;,,&quot;), //s -- subscript
+		 &quot;ctrl+l&quot; : this.createKeySnippet(&quot;\n*&quot;,&quot; &quot;), //l -- list
+		};
+	return keybindings;
+		
 
 };
 
 EditTextWidget.prototype.composeKeyCombo = function (event){
 var keyCombo=&quot;&quot;;
-
             if(event.ctrlKey)keyCombo+=&quot;ctrl+&quot;;
             if(event.shiftKey)keyCombo+=&quot;shift+&quot;;
 			if(event.altKey)keyCombo+=&quot;alt+&quot;;
@@ -2706,55 +2719,39 @@ return keyCombo;
 
 
 EditTextWidget.prototype.insertAtCursor = function (event) {
-    var myValue=&quot;&quot;;
-    var myField;
-if (event.srcElement)  myField = event.srcElement;
- else if (event.target) myField = event.target;
+    var snippet , myField=this.domNodes[0];
+ /*if (event.srcElement)  myField = event.srcElement;
+ else if (event.target) myField = event.target;*/
+ 
 
- var keySnippets = {
-
- &quot;ctrl+b&quot; : this.createKeySnippet(&quot;''&quot;,&quot;''&quot;), //b -- bold
- &quot;ctrl+i&quot; : this.createKeySnippet(&quot;//&quot;,&quot;//&quot;), //i --italics
- &quot;ctrl+o&quot; : this.createKeySnippet(&quot;\n#&quot;,&quot; &quot;), //o -- Ordered list
- &quot;ctrl+u&quot; : this.createKeySnippet(&quot;__&quot;,&quot;__&quot;), //u -- understrike list
- &quot;ctrl+k&quot; : this.createKeySnippet(&quot;\n```\n&quot;,&quot;```&quot;), //k -- code
- &quot;ctrl+s&quot; : this.createKeySnippet(&quot;,,&quot;,&quot;,,&quot;), //s -- subscript
- &quot;ctrl+l&quot; : this.createKeySnippet(&quot;\n*&quot;,&quot; &quot;), //l -- list
-
-};
-
-//keySnippets=JSON.parse(this.wiki.getTiddlerAsJson(&quot;$:/keyboard/snippets&quot;)).text || keySnippets;
-
- if(myValue=keySnippets[this.composeKeyCombo(event)] )
+ if(snippet=this.KEYBINDINGS[this.composeKeyCombo(event)] )
   //para evitar sobreescribir otros eventos solo reaccionamos ante combinaciones que
-  //estén en nuestro map de keySnippets
+  //estén en nuestro map de KEYBINDINGS
  {
             event.preventDefault();
 			event.stopPropagation();
-            //myValue=keySnippets[this.getKeyName(event.keyCode)];
-
         //Internet explorer
             if (document.selection) {
                 myField.focus();
-                sel = document.selection.createRange();
-                sel.text = myValue;
+                var sel = document.selection.createRange();
+                sel.text = snippet;
             }
             //MOZILLA and others
             else if (myField.selectionStart || myField.selectionStart == '0') {
                 var startPos = myField.selectionStart;
                 var endPos = myField.selectionEnd;
                 var selected=myField.value.substring(startPos,endPos);
-                console.log(&quot;Sel Start: &quot;+startPos+&quot; Ends at &quot;+ endPos);
+                //console.log(&quot;Sel Start: &quot;+startPos+&quot; Ends at &quot;+ endPos);
                 myField.value = myField.value.substring(0, startPos)
-                    + myValue.pre + selected + myValue.post
+                    + snippet.pre + selected + snippet.post
                     + myField.value.substring(endPos, myField.value.length);
 
-                var middle=Math.round((myValue.length/2));
-                console.log(middle);
+                var middle=Math.round((snippet.length/2));
+                //console.log(middle);
                 myField.selectionStart = startPos + middle;
                 myField.selectionEnd = startPos + middle;
             } else {
-                myField.value += myValue;
+                myField.value += snippet;
             }
 
     this.saveChanges(this.domNodes[0].value);
@@ -2763,7 +2760,11 @@ if (event.srcElement)  myField = event.srcElement;
 
 })();</pre>
 </div>
-<div current-tiddler="$:/core/modules/widgets/keyboard-snippets.js" modified="20140418201556094" title="$:/HistoryList" type="application/json">
+<div created="20140419071422078" modified="20140419071422078" title="$:/DefaultTiddlers">
+<pre>GettingStarted
+[sort[modified]limit[25]]</pre>
+</div>
+<div current-tiddler="$:/ControlPanel" modified="20140419071331188" title="$:/HistoryList" type="application/json">
 <pre>[
     {
         &quot;title&quot;: &quot;Draft of 'GettingStarted'&quot;
@@ -2999,11 +3000,208 @@ if (event.srcElement)  myField = event.srcElement;
     },
     {
         &quot;title&quot;: &quot;$:/core/modules/widgets/keyboard-snippets.js&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/AdvancedSearch&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 283,
+            &quot;left&quot;: 774,
+            &quot;width&quot;: 14,
+            &quot;right&quot;: 788,
+            &quot;bottom&quot;: 299,
+            &quot;height&quot;: 16
+        }
+    },
+    {
+        &quot;title&quot;: &quot;$:/core/modules/widgets/keyboard-snippets.js&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 295,
+            &quot;left&quot;: 85,
+            &quot;width&quot;: 287,
+            &quot;right&quot;: 372,
+            &quot;bottom&quot;: 311,
+            &quot;height&quot;: 16
+        }
+    },
+    {
+        &quot;title&quot;: &quot;Draft of '$:/core/modules/widgets/keyboard-snippets.js'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/core/modules/widgets/keyboard-snippets.js&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/plugins/danielo/keyboardSnippets/KEYCODES&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 524,
+            &quot;left&quot;: 844,
+            &quot;width&quot;: 337,
+            &quot;right&quot;: 1181,
+            &quot;bottom&quot;: 544,
+            &quot;height&quot;: 20
+        }
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'New Tiddler'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/plugins/danielo/keyboardSnippets/KEYBINDINGS&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of '$:/core/modules/widgets/keyboard-snippets.js'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/core/modules/widgets/keyboard-snippets.js&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of '$:/core/modules/widgets/keyboard-snippets.js'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/core/modules/widgets/keyboard-snippets.js&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of '$:/core/modules/widgets/keyboard-snippets.js'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/core/modules/widgets/keyboard-snippets.js&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of '$:/core/modules/widgets/keyboard-snippets.js'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/core/modules/widgets/keyboard-snippets.js&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of '$:/plugins/danielo/keyboardSnippets/KEYBINDINGS'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/plugins/danielo/keyboardSnippets/KEYBINDINGS&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of '$:/core/modules/widgets/keyboard-snippets.js'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/core/modules/widgets/keyboard-snippets.js&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of '$:/core/modules/widgets/keyboard-snippets.js'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/core/modules/widgets/keyboard-snippets.js&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'New Tiddler'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/AdvancedSearch&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 203,
+            &quot;left&quot;: 935,
+            &quot;width&quot;: 14,
+            &quot;right&quot;: 949,
+            &quot;bottom&quot;: 219,
+            &quot;height&quot;: 16
+        }
+    },
+    {
+        &quot;title&quot;: &quot;$:/plugins/danielo/keyboardSnippets/KEYBINDINGS&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 335,
+            &quot;left&quot;: 85,
+            &quot;width&quot;: 323,
+            &quot;right&quot;: 408,
+            &quot;bottom&quot;: 351,
+            &quot;height&quot;: 16
+        }
+    },
+    {
+        &quot;title&quot;: &quot;Draft of '$:/plugins/danielo/keyboardSnippets/KEYBINDINGS'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/plugins/danielo/keyboardSnippets/KEYBINDINGS&quot;
+    },
+    {
+        &quot;title&quot;: &quot;New Tiddler&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'New Tiddler'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/core/modules/widgets/keyboard-snippets.js&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 351,
+            &quot;left&quot;: 85,
+            &quot;width&quot;: 287,
+            &quot;right&quot;: 372,
+            &quot;bottom&quot;: 367,
+            &quot;height&quot;: 16
+        }
+    },
+    {
+        &quot;title&quot;: &quot;Draft of '$:/core/modules/widgets/keyboard-snippets.js'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/core/modules/widgets/keyboard-snippets.js&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'New Tiddler'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/AdvancedSearch&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 203,
+            &quot;left&quot;: 935,
+            &quot;width&quot;: 14,
+            &quot;right&quot;: 949,
+            &quot;bottom&quot;: 219,
+            &quot;height&quot;: 16
+        }
+    },
+    {
+        &quot;title&quot;: &quot;$:/core/modules/widgets/keyboard-snippets.js&quot;,
+        &quot;fromPageRect&quot;: {
+            &quot;top&quot;: 295,
+            &quot;left&quot;: 85,
+            &quot;width&quot;: 287,
+            &quot;right&quot;: 372,
+            &quot;bottom&quot;: 311,
+            &quot;height&quot;: 16
+        }
+    },
+    {
+        &quot;title&quot;: &quot;Draft of '$:/core/modules/widgets/keyboard-snippets.js'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/core/modules/widgets/keyboard-snippets.js&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of '$:/core/modules/widgets/keyboard-snippets.js'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/core/modules/widgets/keyboard-snippets.js&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'New Tiddler'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/ControlPanel&quot;
     }
 ]</pre>
 </div>
 <div title="$:/isEncrypted">
 <pre>no</pre>
+</div>
+<div created="20140419050820052" modified="20140419055241973" tags="plugin" title="$:/plugins/danielo/keyboardSnippets/KEYBINDINGS" type="application/json">
+<pre>{ 
+ &quot;ctrl+b&quot; : { &quot;pre&quot;:&quot;''&quot;, &quot;post&quot;:&quot;''&quot;}, 
+ &quot;ctrl+i&quot; : { &quot;pre&quot;:&quot;//&quot;, &quot;post&quot;:&quot;//&quot;},
+ &quot;ctrl+o&quot; : { &quot;pre&quot;:&quot;\n#&quot;, &quot;post&quot;:&quot; &quot;},
+ &quot;ctrl+l&quot; : { &quot;pre&quot;:&quot;\n*&quot;, &quot;post&quot;:&quot; &quot;},
+ &quot;ctrl+u&quot; : { &quot;pre&quot;:&quot;__&quot;, &quot;post&quot;:&quot;__&quot;}, 
+ &quot;ctrl+k&quot; : { &quot;pre&quot;:&quot;\n```\n&quot;, &quot;post&quot;:&quot;```&quot;}, 
+ &quot;ctrl+s&quot; : { &quot;pre&quot;:&quot;,,&quot;, &quot;post&quot;:&quot;,,&quot;}, 
+ &quot;alt+s&quot; : { &quot;pre&quot;:&quot;~~&quot;, &quot;post&quot;:&quot;~~&quot;}
+
+}</pre>
 </div>
 <div created="20140418175933770" modified="20140418180839226" tags="plugin" title="$:/plugins/danielo/keyboardSnippets/KEYCODES" type="application/json">
 <pre>{
@@ -3123,7 +3321,13 @@ if (event.srcElement)  myField = event.srcElement;
 }</pre>
 </div>
 <div title="$:/ShowEditPreview">
-<pre>no</pre>
+<pre>yes</pre>
+</div>
+<div created="20140419071343651" modified="20140419071407270" title="$:/SiteSubtitle">
+<pre>Add keyboard shortucts to edit text fields.</pre>
+</div>
+<div created="20140419071335996" modified="20140419071339403" title="$:/SiteTitle">
+<pre>keyboardShortucts</pre>
 </div>
 <div title="$:/state/tab-{-618750197}">
 <pre>$:/core/ui/AdvancedSearch/System</pre>
@@ -3132,12 +3336,15 @@ if (event.srcElement)  myField = event.srcElement;
 <pre>$:/core/ui/TiddlerInfo/Fields</pre>
 </div>
 <div title="$:/state/tab-{260706635}">
-<pre>$:/core/ui/ControlPanel/Plugins</pre>
+<pre>$:/core/ui/ControlPanel/Basics</pre>
 </div>
 <div title="$:/state/tab/sidebar-{1743827719}">
 <pre>$:/core/ui/SideBar/More</pre>
 </div>
-<div list="$:/AdvancedSearch $:/core/modules/widgets/keyboard-snippets.js $:/plugins/danielo/keyboardSnippets/KEYMAP $:/plugins/danielo/keyboardSnippets/KEYCODES GettingStarted" title="$:/StoryList">
+<div created="20140419071431470" creator="d" modified="20140419071432446" modifier="daniel" title="$:/status/UserName">
+<pre>danielo</pre>
+</div>
+<div list="GettingStarted" title="$:/StoryList">
 <pre></pre>
 </div>
 <div created="20140418153514636" modified="20140418184454578" title="$:/temp/advancedsearch">
@@ -3147,6 +3354,9 @@ if (event.srcElement)  myField = event.srcElement;
 <pre></pre>
 </div>
 <div created="20140418180414622" modified="20140418180415952" title="$:/temp/NewTagName">
+<pre></pre>
+</div>
+<div created="20140419050624068" modified="20140419050627213" title="$:/temp/search">
 <pre></pre>
 </div>
 <div dependents="$:/themes/tiddlywiki/vanilla" description="A clean theme that emphasises individual tiddlers" name="Snow White" plugin-type="theme" title="$:/themes/tiddlywiki/snowwhite" type="application/json" version="5.0.8-beta">
