@@ -31,7 +31,14 @@ EditTextWidget.prototype.postRender = function() {
 
 
 EditTextWidget.prototype.createKeySnippet = function(preTag,postTag){
- return {pre:preTag, post:postTag, length:preTag.length+postTag.length };
+ if(typeof arguments[0] == "object")
+ {
+	 var result = arguments[0];
+	 result.length=result.pre.length+result.post.length;
+	 return result;
+ }
+ 
+	return {pre:preTag, post:postTag, length:preTag.length+postTag.length };
 };
 
 
@@ -44,8 +51,7 @@ EditTextWidget.prototype.parseKeyBindings = function (keyCombinations){
 var keybindings={}; 
 if (keyCombinations) {
 	for(var comb in keyCombinations){
-		//console.log(keyCombinations[comb]);
-		keybindings[comb.toLowerCase()]=this.createKeySnippet(keyCombinations[comb].pre,keyCombinations[comb].post);
+		keybindings[comb.toLowerCase()]=this.createKeySnippet(keyCombinations[comb]);
 	}
 	return keybindings;
 }
@@ -100,19 +106,34 @@ EditTextWidget.prototype.insertAtCursor = function (event) {
                 var selected=myField.value.substring(startPos,endPos);
                 //console.log("Sel Start: "+startPos+" Ends at "+ endPos);
                 myField.value = myField.value.substring(0, startPos)
-                    + snippet.pre + selected + snippet.post
-                    + myField.value.substring(endPos, myField.value.length);
+                    + this.applyTag(snippet,selected)
+					+ myField.value.substring(endPos, myField.value.length);
 
-                var middle=Math.round((snippet.length/2));
-                //console.log(middle);
-                myField.selectionStart = startPos + middle;
-                myField.selectionEnd = startPos + middle;
+                myField.selectionStart = startPos + snippet.pre.length;
+                myField.selectionEnd = startPos + snippet.pre.length + selected.length;
             } else {
                 myField.value += snippet;
             }
 
     this.saveChanges(this.domNodes[0].value);
     }
+};
+
+EditTextWidget.prototype.applyTag = function(tag,text){
+	if(tag.hasOwnProperty("multiline")){
+		var elements = text.split("\n");
+		for(var i in elements) 
+			if(elements[i].length > 1 || elements.length < 2)
+				elements[i]=tag.pre+elements[i]+tag.post;
+			
+		text=elements.join("\n");
+	}else{
+		text=tag.pre+text+tag.post;
+	}
+	
+	console.log(text);
+	return text;
+	
 };
 
 })();
