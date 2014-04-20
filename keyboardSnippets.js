@@ -34,7 +34,7 @@ EditTextWidget.prototype.createKeySnippet = function(preTag,postTag){
  if(typeof arguments[0] == "object")
  {
 	 var result = arguments[0];
-	 result.length=result.pre.length+result.post.length;
+	 if(result.pre && result.post) result.length=result.pre.length+result.post.length;
 	 return result;
  }
  
@@ -65,6 +65,7 @@ if (keyCombinations) {
 		 "ctrl+k" : this.createKeySnippet("\n```\n","```"), //k -- code
 		 "ctrl+s" : this.createKeySnippet(",,",",,"), //s -- subscript
 		 "ctrl+l" : this.createKeySnippet("\n*"," "), //l -- list
+		 "ctrl+right_arrow" : {moveto:"|"}
 		};
 	return keybindings;
 		
@@ -91,8 +92,7 @@ EditTextWidget.prototype.insertAtCursor = function (event) {
   //para evitar sobreescribir otros eventos solo reaccionamos ante combinaciones que
   //estén en nuestro map de KEYBINDINGS
  {
-            event.preventDefault();
-			event.stopPropagation();
+	var reacted=false;
         //Internet explorer
             if (document.selection) {
                 myField.focus();
@@ -101,22 +101,46 @@ EditTextWidget.prototype.insertAtCursor = function (event) {
             }
             //MOZILLA and others
             else if (myField.selectionStart || myField.selectionStart == '0') {
-                var startPos = myField.selectionStart;
-                var endPos = myField.selectionEnd;
-                var selected=myField.value.substring(startPos,endPos);
-                //console.log("Sel Start: "+startPos+" Ends at "+ endPos);
-                myField.value = myField.value.substring(0, startPos)
-                    + this.applyTag(snippet,selected)
-					+ myField.value.substring(endPos, myField.value.length);
-
-                myField.selectionStart = startPos + snippet.pre.length;
-                myField.selectionEnd = startPos + snippet.pre.length + selected.length;
+                var selection = this.getSelection(myField);
+                if( snippet.hasOwnProperty("moveto")  ){
+					var move = selection.followingText.indexOf(snippet.moveto);
+					if(move >=0){ 
+						reacted=true; //only stop default if we have to move
+						this.moveSelection(myField,selection,move+1);
+						}
+				}else{
+					reacted=true;
+					myField.value = selection.previousText
+						+ this.applyTag(snippet,selection.text)
+						+ selection.followingText;
+					this.moveSelection(myField,selection,snippet.pre.length);
+				}
             } else {
                 myField.value += snippet;
             }
-
+	if (reacted){ event.preventDefault(); event.stopPropagation();}
+	
     this.saveChanges(this.domNodes[0].value);
     }
+	
+};
+
+/*selection { object } domNode {dom object} 
+length{number} number of characters to move the selection */
+EditTextWidget.prototype.moveSelection = function(domNode,selection,length){
+domNode.selectionStart = selection.start + length;
+domNode.selectionEnd = selection.start + length + selection.text.length;
+};
+
+EditTextWidget.prototype.getSelection = function(domNode){
+var selStarts=domNode.selectionStart; var selEnds=domNode.selectionEnd;
+return {
+		start:selStarts,
+		end:selEnds,
+		text:domNode.value.substring(selStarts,selEnds),
+		previousText:domNode.value.substring(0, selStarts),
+		followingText:domNode.value.substring(selEnds, domNode.value.length)
+		};
 };
 
 EditTextWidget.prototype.applyTag = function(tag,text){
