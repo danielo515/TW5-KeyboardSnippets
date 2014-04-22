@@ -154,7 +154,6 @@ EditTextWidget.prototype.applyTag = function(tag,text){
 		text=elements.join("\n");
 	}else if (tag.hasOwnProperty("regExp")){
 		var regExps = tag.regExp;
-		console.log(regExps);
 		for(var i in regExps){
 			var regExp = new RegExp(regExps[i].exp,regExps[i].modificators);
 			text = text.replace(regExp,regExps[i].replace);
@@ -164,7 +163,6 @@ EditTextWidget.prototype.applyTag = function(tag,text){
 		text=tag.pre+text+tag.post;
 	}
 	
-	console.log(text);
 	return text;
 	
 };
