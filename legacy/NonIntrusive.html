@@ -179,6 +179,8 @@ Error message and password prompt
 
 <li>packPlugin.js</li>
 
+<li>Untitled</li>
+
 </ul>
 </p>
 
@@ -2649,7 +2651,7 @@ Error message and password prompt
     }
 }</pre>
 </div>
-<div created="20140418153435777" creator="danielo" modified="20140420141148640" modifier="danielo" module-type="widget" tags="plugin" title="$:/core/modules/widgets/keyboard-snippets.js" type="application/javascript">
+<div created="20140418153435777" creator="danielo" modified="20140422024102379" modifier="danielo" module-type="widget" tags="plugin" title="$:/core/modules/widgets/keyboard-snippets.js" type="application/javascript">
 <pre>/*\
 title: $:/core/modules/widgets/keyboard-snippets.js
 type: application/javascript
@@ -2686,11 +2688,12 @@ EditTextWidget.prototype.createKeySnippet = function(preTag,postTag){
  if(typeof arguments[0] == &quot;object&quot;)
  {
 	 var result = arguments[0];
-	 if(result.pre &amp;&amp; result.post) result.length=result.pre.length+result.post.length;
+	 if(result.hasOwnProperty(&quot;length&quot;)) return {regExp:result, length:result[0][&quot;replace&quot;].length};
+	 if(result.pre &amp;&amp; result.post) result.length=result.pre.length;
 	 return result;
  }
- 
-	return {pre:preTag, post:postTag, length:preTag.length+postTag.length };
+	
+	return {pre:preTag, post:postTag, length:preTag.length };
 };
 
 
@@ -2765,7 +2768,7 @@ EditTextWidget.prototype.insertAtCursor = function (event) {
 					myField.value = selection.previousText
 						+ this.applyTag(snippet,selection.text)
 						+ selection.followingText;
-					this.moveSelection(myField,selection,snippet.pre.length);
+					this.moveSelection(myField,selection,snippet.length);
 				}
             } else {
                 myField.value += snippet;
@@ -2803,11 +2806,17 @@ EditTextWidget.prototype.applyTag = function(tag,text){
 				elements[i]=tag.pre+elements[i]+tag.post;
 			
 		text=elements.join(&quot;\n&quot;);
-	}else{
+	}else if (tag.hasOwnProperty(&quot;regExp&quot;)){
+		var regExps = tag.regExp;
+		for(var i in regExps){
+			var regExp = new RegExp(regExps[i].exp,regExps[i].modificators);
+			text = text.replace(regExp,regExps[i].replace);
+		}
+	}	
+	else{
 		text=tag.pre+text+tag.post;
 	}
 	
-	console.log(text);
 	return text;
 	
 };
@@ -2817,7 +2826,7 @@ EditTextWidget.prototype.applyTag = function(tag,text){
 <div created="20140419071422078" modified="20140419071422078" title="$:/DefaultTiddlers">
 <pre>[list[$:/StoryList]]</pre>
 </div>
-<div current-tiddler="$:/plugins/danielo/keyboardSnippets/KEYBINDINGS" modified="20140420141334305" modifier="danielo" title="$:/HistoryList" type="application/json">
+<div current-tiddler="$:/core/modules/widgets/keyboard-snippets.js" modified="20140422024102382" modifier="danielo" title="$:/HistoryList" type="application/json">
 <pre>[
     {
         &quot;title&quot;: &quot;Draft of 'GettingStarted'&quot;
@@ -3740,13 +3749,136 @@ EditTextWidget.prototype.applyTag = function(tag,text){
     },
     {
         &quot;title&quot;: &quot;$:/plugins/danielo/keyboardSnippets/KEYBINDINGS&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of '$:/core/modules/widgets/keyboard-snippets.js'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/core/modules/widgets/keyboard-snippets.js&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of '$:/plugins/danielo/keyboardSnippets/KEYBINDINGS'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/plugins/danielo/keyboardSnippets/KEYBINDINGS&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of '$:/core/modules/widgets/keyboard-snippets.js'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/core/modules/widgets/keyboard-snippets.js&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of '$:/core/modules/widgets/keyboard-snippets.js'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/core/modules/widgets/keyboard-snippets.js&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'New Tiddler 1'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Untitled&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of '$:/plugins/danielo/keyboardSnippets/KEYBINDINGS'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/plugins/danielo/keyboardSnippets/KEYBINDINGS&quot;
+    },
+    {
+        &quot;title&quot;: &quot;New Tiddler 1&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'Untitled'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Untitled&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'New Tiddler 1'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of '$:/core/modules/widgets/keyboard-snippets.js'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/core/modules/widgets/keyboard-snippets.js&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'Untitled'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Untitled&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of '$:/plugins/danielo/keyboardSnippets/KEYBINDINGS'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/plugins/danielo/keyboardSnippets/KEYBINDINGS&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'Untitled'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of '$:/plugins/danielo/keyboardSnippets/KEYBINDINGS'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/plugins/danielo/keyboardSnippets/KEYBINDINGS&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of '$:/plugins/danielo/keyboardSnippets/KEYBINDINGS'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/plugins/danielo/keyboardSnippets/KEYBINDINGS&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Untitled&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'Untitled'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Untitled&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'Untitled'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Untitled&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'Untitled'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Untitled&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'Untitled'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Untitled&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'New Tiddler 1'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of 'Untitled'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Untitled&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Draft of '$:/core/modules/widgets/keyboard-snippets.js'&quot;
+    },
+    {
+        &quot;title&quot;: &quot;$:/core/modules/widgets/keyboard-snippets.js&quot;
     }
 ]</pre>
 </div>
 <div title="$:/isEncrypted">
 <pre>no</pre>
 </div>
-<div created="20140419050820052" creator="danielo" modified="20140420141334303" modifier="danielo" tags="plugin" title="$:/plugins/danielo/keyboardSnippets/KEYBINDINGS" type="application/json">
+<div created="20140419050820052" creator="danielo" modified="20140422000833962" modifier="danielo" tags="plugin" title="$:/plugins/danielo/keyboardSnippets/KEYBINDINGS" type="application/json">
 <pre>{ 
  &quot;ctrl+b&quot; : { &quot;pre&quot;:&quot;''&quot;, &quot;post&quot;:&quot;''&quot;}, 
  &quot;ctrl+i&quot; : { &quot;pre&quot;:&quot;//&quot;, &quot;post&quot;:&quot;//&quot;},
@@ -3758,12 +3890,12 @@ EditTextWidget.prototype.applyTag = function(tag,text){
  &quot;ctrl+s&quot; : { &quot;pre&quot;:&quot;,,&quot;, &quot;post&quot;:&quot;,,&quot;},
  &quot;ctrl+alt+t&quot; : { &quot;pre&quot;:&quot;{{&quot;, &quot;post&quot;:&quot;}}&quot;},
  &quot;ctrl+alt+l&quot; : { &quot;pre&quot;:&quot;[[&quot;, &quot;post&quot;:&quot;]]&quot;},
- &quot;alt+t&quot; : { &quot;pre&quot;:&quot;| &quot;, &quot;post&quot;:&quot; |&quot;},
  &quot;alt+h&quot; : { &quot;pre&quot;:&quot;|! &quot;, &quot;post&quot;:&quot; |&quot;},
  &quot;alt+s&quot; : { &quot;pre&quot;:&quot;~~&quot;, &quot;post&quot;:&quot;~~&quot;},
  &quot;alt+w&quot; : { &quot;pre&quot;:&quot;&lt;$&quot;, &quot;post&quot;:&quot;/&gt;&quot;},
  &quot;alt+z&quot; : { &quot;pre&quot;:&quot;{{!!&quot;, &quot;post&quot;:&quot;}}&quot;},
- &quot;ctrl+right_arrow&quot; : { &quot;moveto&quot; : &quot;|&quot;}
+ &quot;ctrl+right_arrow&quot; : { &quot;moveto&quot; : &quot;|&quot;},
+  &quot;alt+t&quot; : [ {&quot;exp&quot;:&quot;^&quot;, &quot;modificators&quot;:&quot;gm&quot;, &quot;replace&quot;:&quot;| &quot;},{&quot;exp&quot;:&quot;  +&quot;, &quot;modificators&quot;:&quot;g&quot;, &quot;replace&quot;:&quot; | &quot;},{&quot;exp&quot;:&quot;$&quot;, &quot;modificators&quot;:&quot;gm&quot;, &quot;replace&quot;:&quot; |&quot;}]
 
 }</pre>
 </div>
@@ -3908,7 +4040,7 @@ EditTextWidget.prototype.applyTag = function(tag,text){
 <div created="20140419071431470" creator="d" modified="20140419071432446" modifier="daniel" title="$:/status/UserName">
 <pre>danielo</pre>
 </div>
-<div list="[[New Tiddler]] packator $:/plugins/danielo/keyboardSnippets/KEYMAP $:/core/modules/widgets/keyboard-snippets.js $:/plugins/danielo/keyboardSnippets/KEYBINDINGS" title="$:/StoryList">
+<div list="Untitled [[New Tiddler]] packator $:/plugins/danielo/keyboardSnippets/KEYMAP $:/core/modules/widgets/keyboard-snippets.js $:/plugins/danielo/keyboardSnippets/KEYBINDINGS" title="$:/StoryList">
 <pre></pre>
 </div>
 <div created="20140418153514636" creator="danielo" modified="20140419073826868" modifier="danielo" title="$:/temp/advancedsearch">
@@ -4147,6 +4279,9 @@ packAsPlugin.prototype.saveTiddler=function (tiddler,fields){
 exports.packPlugin = packAsPlugin;
 
 })();</pre>
+</div>
+<div created="20140421235147487" creator="danielo" modified="20140421235147487" modifier="danielo" title="Untitled">
+<pre>Mi pene  quiere tener  un hermanito</pre>
 </div>
 
 </div>

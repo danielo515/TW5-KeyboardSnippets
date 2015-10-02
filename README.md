@@ -1,4 +1,4 @@
-extendTextWidget
+KeyboardSnippets
 ================
 
 A small adition to the TW5 edit-text widgets for add the functionality of  

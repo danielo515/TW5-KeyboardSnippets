@@ -1,5 +1,5 @@
 /*\
-title: $:/core/modules/widgets/keyboard-snippets.js
+title: $:/plugins/danielo/keyboardSnippets/keyboardSnippets.js
 type: application/javascript
 module-type: widget
 
@@ -34,11 +34,12 @@ EditTextWidget.prototype.createKeySnippet = function(preTag,postTag){
  if(typeof arguments[0] == "object")
  {
 	 var result = arguments[0];
-	 if(result.pre && result.post) result.length=result.pre.length+result.post.length;
+	 if(result.hasOwnProperty("length")) return {regExp:result, length:result[0]["replace"].length};
+	 if(result.pre && result.post) result.length=result.pre.length;
 	 return result;
  }
- 
-	return {pre:preTag, post:postTag, length:preTag.length+postTag.length };
+	
+	return {pre:preTag, post:postTag, length:preTag.length };
 };
 
 
@@ -113,7 +114,7 @@ EditTextWidget.prototype.insertAtCursor = function (event) {
 					myField.value = selection.previousText
 						+ this.applyTag(snippet,selection.text)
 						+ selection.followingText;
-					this.moveSelection(myField,selection,snippet.pre.length);
+					this.moveSelection(myField,selection,snippet.length);
 				}
             } else {
                 myField.value += snippet;
@@ -151,11 +152,17 @@ EditTextWidget.prototype.applyTag = function(tag,text){
 				elements[i]=tag.pre+elements[i]+tag.post;
 			
 		text=elements.join("\n");
-	}else{
+	}else if (tag.hasOwnProperty("regExp")){
+		var regExps = tag.regExp;
+		for(var i in regExps){
+			var regExp = new RegExp(regExps[i].exp,regExps[i].modificators);
+			text = text.replace(regExp,regExps[i].replace);
+		}
+	}	
+	else{
 		text=tag.pre+text+tag.post;
 	}
 	
-	console.log(text);
 	return text;
 	
 };
