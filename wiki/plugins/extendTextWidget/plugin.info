@@ -1,5 +1,5 @@
 {
-  "title": "$:/plugins/danielo515/extendTextWidget",
+  "title": "$:/plugins/danielo/keyboardSnippets",
   "description": "Extends the default text editor capabilityes with keyboard shortcuts",
   "author": "Danielo Rodriguez",
   "core-version": ">=5.1.0",
