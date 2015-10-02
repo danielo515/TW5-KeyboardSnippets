@@ -1,0 +1,9 @@
+{
+  "title": "$:/plugins/danielo515/extendTextWidget",
+  "description": "Extends the default text editor capabilityes with keyboard shortcuts",
+  "author": "Danielo Rodriguez",
+  "core-version": ">=5.1.0",
+  "version" : "1.5.9",
+  "source":"https://github.com/danielo515/TW5-KeyboardSnippets",
+  "list": "readme"
+}

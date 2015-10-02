@@ -1,5 +1,5 @@
 /*\
-title: $:/core/modules/widgets/keyboard-snippets.js
+title: $:/plugins/danielo/keyboardSnippets/keyboardSnippets.js
 type: application/javascript
 module-type: widget
 
