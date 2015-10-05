@@ -1,3 +1,11 @@
+created: 20151005072428241
+creator: pene
+modified: 20151005072636302
+modifier: pene
+tags: 
+title: $:/plugins/danielo/keyboardSnippets/KEYCODES
+type: application/json
+
 {
   "backspace" : "8",
   "tab" : "9",
